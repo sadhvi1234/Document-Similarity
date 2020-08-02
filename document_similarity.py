@@ -5,14 +5,10 @@ def read_file(filename):
     """ 
     read text file and return text lines
     """
-    try:
-        f = open(filename,'r')
-        return f.readlines()
-    except IOError:
-        print "error!: ",filename
-        sys.exit()
+    f = open(filename,'r')
+    return f.readlines()
 
-def get_words_from_line_list(L):
+def get_words_from_line(L):
     word_list = []
     for line in L:
         words_in_line = get_words_from_string(line)
@@ -40,15 +36,15 @@ def get_words_from_string(line):
     return word_list
 
 # count frequency
-def count_frequency(word_list):
+def count_frequency(words):
     L = []
-    for new_word in word_list:
-        for entry in L:
-            if new_word == entry[0]:
-                entry[1] = entry[1] + 1
+    for word in words:
+        for p in L:
+            if word == p[0]:
+                p[1] = 1+p[1]
                 break
         else:
-            L.append([new_word,1])
+            L.append([word,1])
     return L
 
 #sorting
@@ -63,18 +59,13 @@ def insertion_sort(A):
         A[i+1] = key
     return A
     
-def word_frequencies_for_file(filename):
+def word_frequencies(filename):
     
     line_list = read_file(filename)
-    word_list = get_words_from_line_list(line_list)
-    freq_mapping = count_frequency(word_list)
-    insertion_sort(freq_mapping)
-
-    print "File",filename,":",
-    print len(word_list),"words,",
-    print len(freq_mapping),"distinct words"
-
-    return freq_mapping
+    word_list = get_words_from_line(line_list)
+    freq = count_frequency(word_list)
+    insertion_sort(freq)
+    return freq
 
 def inner_product(L1,L2):
     """
@@ -101,9 +92,9 @@ def main():
     else:
         file1 = sys.argv[1]
         file2 = sys.argv[2]
-        sorted_word_list_1 = word_frequencies_for_file(file1)
-        sorted_word_list_2 = word_frequencies_for_file(file2)
-        distance = vector_angle(sorted_word_list_1,sorted_word_list_2)
+        f1= word_frequencies(file1)
+        f2 = word_frequencies(file2)
+        distance = vector_angle(f1,f2)
         print "the similarity distance between the documents is: %0.4f (radians)"%distance
 
 if __name__ == "__main__":
