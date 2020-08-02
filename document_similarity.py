@@ -1,26 +1,18 @@
 import math
 import sys
+import os
 def read_file(filename):
     """ 
-    Read the text file with the given filename;
-    return a list of the lines of text in the file.
+    read text file and return text lines
     """
     try:
-        f = open(filename, 'r')
+        f = open(filename,'r')
         return f.readlines()
     except IOError:
-        print "Error opening or reading input file: ",filename
+        print "error!: ",filename
         sys.exit()
 
-#################################################
-# Operation 2: split the text lines into words ##
-#################################################
 def get_words_from_line_list(L):
-    """
-    Parse the given list L of text lines into words.
-    Return list of all words found.
-    """
-
     word_list = []
     for line in L:
         words_in_line = get_words_from_string(line)
@@ -29,18 +21,13 @@ def get_words_from_line_list(L):
 
 def get_words_from_string(line):
     """
-    Return a list of the words in the given input string,
-    converting each word to lower-case.
-
-    Input:  line (a string)
-    Output: a list of strings 
-              (each string is a sequence of alphanumeric characters)
+    convertt each word to lower case and return list
     """
-    word_list = []          # accumulates words in line
-    character_list = []     # accumulates characters in word
-    for c in line:
-        if c.isalnum():
-            character_list.append(c)
+    word_list = []    
+    character_list = []
+    for x in line:
+        if x.isalnum():
+            character_list.append(x)
         elif len(character_list)>0:
             word = "".join(character_list)
             word = word.lower()
@@ -52,13 +39,8 @@ def get_words_from_string(line):
         word_list.append(word)
     return word_list
 
-##############################################
-# Operation 3: count frequency of each word ##
-##############################################
+# count frequency
 def count_frequency(word_list):
-    """
-    Return a list giving pairs of form: (word,frequency)
-    """
     L = []
     for new_word in word_list:
         for entry in L:
@@ -69,21 +51,11 @@ def count_frequency(word_list):
             L.append([new_word,1])
     return L
 
-###############################################################
-# Operation 4: sort words into alphabetic order             ###
-###############################################################
+#sorting
 def insertion_sort(A):
-    """
-    Sort list A into order, in place.
-
-    From Cormen/Leiserson/Rivest/Stein,
-    Introduction to Algorithms (second edition), page 17,
-    modified to adjust for fact that Python arrays use 
-    0-indexing.
-    """
+    #insertion sort implementation
     for j in range(len(A)):
         key = A[j]
-        # insert A[j] into sorted sequence A[0..j-1]
         i = j-1
         while i>-1 and A[i]>key:
             A[i+1] = A[i]
@@ -91,22 +63,14 @@ def insertion_sort(A):
         A[i+1] = key
     return A
     
-#############################################
-## compute word frequencies for input file ##
-#############################################
 def word_frequencies_for_file(filename):
-    """
-    Return alphabetically sorted list of (word,frequency) pairs 
-    for the given file.
-    """
-
+    
     line_list = read_file(filename)
     word_list = get_words_from_line_list(line_list)
     freq_mapping = count_frequency(word_list)
     insertion_sort(freq_mapping)
 
     print "File",filename,":",
-    print len(line_list),"lines,",
     print len(word_list),"words,",
     print len(freq_mapping),"distinct words"
 
@@ -114,11 +78,7 @@ def word_frequencies_for_file(filename):
 
 def inner_product(L1,L2):
     """
-    Inner product between two vectors, where vectors
-    are represented as lists of (word,freq) pairs.
-
-    Example: inner_product([["and",3],["of",2],["the",5]],
-                           [["and",4],["in",1],["of",1],["this",2]]) = 14.0 
+    vectors are represented as lists of (word,frequency) pairs
     """
     sum = 0.0
     for word1, count1 in L1:
@@ -129,9 +89,7 @@ def inner_product(L1,L2):
 
 def vector_angle(L1,L2):
     """
-    The input is a list of (word,freq) pairs, sorted alphabetically.
-
-    Return the angle between these two vectors.
+    return the angle between two vectors.
     """
     numerator = inner_product(L1,L2)
     denominator = math.sqrt(inner_product(L1,L1)*inner_product(L2,L2))
@@ -139,14 +97,14 @@ def vector_angle(L1,L2):
 
 def main():
     if len(sys.argv) != 3:
-        print "Usage: docdist1.py filename_1 filename_2"
+        print "Usage: document_similarity.py file1 file2"
     else:
-        filename_1 = sys.argv[1]
-        filename_2 = sys.argv[2]
-        sorted_word_list_1 = word_frequencies_for_file(filename_1)
-        sorted_word_list_2 = word_frequencies_for_file(filename_2)
+        file1 = sys.argv[1]
+        file2 = sys.argv[2]
+        sorted_word_list_1 = word_frequencies_for_file(file1)
+        sorted_word_list_2 = word_frequencies_for_file(file2)
         distance = vector_angle(sorted_word_list_1,sorted_word_list_2)
-        print "The distance between the documents is: %0.6f (radians)"%distance
+        print "the similarity distance between the documents is: %0.4f (radians)"%distance
 
 if __name__ == "__main__":
     import profile
