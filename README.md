@@ -10,4 +10,5 @@ For each input file, a word-frequency vector is computed as :
 The "distance" between two vectors is the angle between them. If x = (x1, x2, ..., xn) is the first vector (xi = freq of word i) and y = (y1, y2, ..., yn) is the second vector,then the angle between them is defined as: d(x,y) = arccos(inner_product(x,y) / (norm(x)*norm(y))) where:
 inner_product(x,y) = x1*y1 + x2*y2 + ... xn*yn
 norm(x) = sqrt(inner_product(x,x))
+The code has been taken from MIT course of Algorithms. 
 
